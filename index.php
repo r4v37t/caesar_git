@@ -624,10 +624,13 @@ if(isset($_GET['logout'])){
 		$sampul=$_FILES['sampul']['name'];
 		$track=$_FILES['track']['name'];
 		$tgl=date('Y-m-d');
+		$acceptable = array(
+			'audio/mpeg'
+		);
 		if(!empty($judul)&&!empty($desk)&&!empty($sampul)&&!empty($track)){
 			$lokasi_sampul="assets/track/sampul/$sampul";
 			$lokasi_file="assets/track/file/$track";
-			if(move_uploaded_file($_FILES['sampul']['tmp_name'],$lokasi_sampul)){
+			if(move_uploaded_file($_FILES['sampul']['tmp_name'],$lokasi_sampul)&&!in_array($_FILES['track']['type'], $acceptable)){
 				if(move_uploaded_file($_FILES['track']['tmp_name'],$lokasi_file)){
 					$q=mysql_query("insert into track values(null,'$_SESSION[login]','$judul','$desk','$lokasi_sampul','$lokasi_file','$tgl',0,0)");
 					if($q){
@@ -642,7 +645,10 @@ if(isset($_GET['logout'])){
 						</script><?php
 					}
 				}else{
-					echo 'errr'.$_FILES['track']['error'];
+					?><script>
+						$('#modal-uploadfileerror').modal('show'); 
+						setTimeout(function(){location.href='?';},1000);
+					</script><?php
 				}
 			}else{
 				?><script>
