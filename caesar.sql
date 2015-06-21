@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 17, 2015 at 07:31 AM
+-- Generation Time: Jun 21, 2015 at 10:08 PM
 -- Server version: 5.5.27
 -- PHP Version: 5.4.7
 
@@ -31,14 +31,16 @@ CREATE TABLE IF NOT EXISTS `follow` (
   `user` varchar(50) NOT NULL,
   `target` varchar(50) NOT NULL,
   PRIMARY KEY (`follow_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `follow`
 --
 
 INSERT INTO `follow` (`follow_id`, `user`, `target`) VALUES
-(2, 'user2@mail.com', 'user@mail.com');
+(2, 'user2@mail.com', 'user@mail.com'),
+(4, 'admin@mail.com', 'user@mail.com'),
+(8, 'user@mail.com', 'user2@mail.com');
 
 -- --------------------------------------------------------
 
@@ -52,16 +54,15 @@ CREATE TABLE IF NOT EXISTS `komentar` (
   `user` varchar(50) NOT NULL,
   `isi` varchar(255) NOT NULL,
   PRIMARY KEY (`komentar_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `komentar`
 --
 
 INSERT INTO `komentar` (`komentar_id`, `track_id`, `user`, `isi`) VALUES
-(1, 1, 'user@mail.com', 'coba'),
-(2, 1, 'user@mail.com', 'coba kembali'),
-(3, 1, 'user2@mail.com', 'bagus');
+(1, 2, 'user@mail.com', 'mantap sekali @[user2](user2@mail.com)'),
+(2, 2, 'user2@mail.com', 'terima kasih @[Pengguna Pertama](user@mail.com)');
 
 -- --------------------------------------------------------
 
@@ -87,6 +88,30 @@ INSERT INTO `konten` (`konten_id`, `isi`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notif`
+--
+
+CREATE TABLE IF NOT EXISTS `notif` (
+  `notif_id` int(11) NOT NULL AUTO_INCREMENT,
+  `track_id` int(11) NOT NULL,
+  `user` varchar(50) NOT NULL,
+  `status` varchar(5) NOT NULL,
+  `tgl` datetime NOT NULL,
+  PRIMARY KEY (`notif_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `notif`
+--
+
+INSERT INTO `notif` (`notif_id`, `track_id`, `user`, `status`, `tgl`) VALUES
+(1, 2, 'user2@mail.com', 'init', '2015-06-21 19:22:17'),
+(2, 1, 'user@mail.com', 'init', '2015-06-21 19:22:17'),
+(3, 2, 'user@mail.com', 'baca', '2015-06-21 20:20:30');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `track`
 --
 
@@ -108,8 +133,8 @@ CREATE TABLE IF NOT EXISTS `track` (
 --
 
 INSERT INTO `track` (`track_id`, `user`, `judul`, `desk`, `sampul`, `file`, `tgl`, `putar`, `suka`) VALUES
-(1, 'user@mail.com', 'Lagu Pertama', 'sasadsadsa', 'assets/track/sampul/AZCS-1041.jpg', 'assets/track/file/08. Decision.mp3', '2015-06-17', 3, 2),
-(2, 'user2@mail.com', 'Heartache', 'One Ok Rock', 'assets/track/sampul/AZCS-1041.jpg', 'assets/track/file/06. Heartache.mp3', '2015-06-17', 1, 0);
+(1, 'user@mail.com', 'Lagu Pertama', 'sasadsadsa', 'assets/track/sampul/AZCS-1041.jpg', 'assets/track/file/08. Decision.mp3', '2015-06-17', 5, 3),
+(2, 'user2@mail.com', 'Heartache', 'One Ok Rock', 'assets/track/sampul/AZCS-1041.jpg', 'assets/track/file/06. Heartache.mp3', '2015-06-17', 3, 0);
 
 -- --------------------------------------------------------
 

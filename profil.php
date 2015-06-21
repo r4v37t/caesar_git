@@ -1,5 +1,9 @@
 <?php
-$q=mysql_query("select * from user where email='$_SESSION[login]'");
+if(isset($_GET['id'])){
+	$q=mysql_query("select * from user where email='$_GET[id]'");
+}else{
+	$q=mysql_query("select * from user where email='$_SESSION[login]'");
+}
 $h=mysql_fetch_array($q);
 ?>
 <div class="col-md-12">
@@ -18,7 +22,24 @@ $h=mysql_fetch_array($q);
 						<p><?php echo $h['email']; ?></p>
 						<p>&nbsp;</p>
 						<p>
+							<?php
+							if(!isset($_GET['id'])){
+							?>
 							<a href="#modal-editprofil" data-toggle="modal" class="btn btn-sm btn-danger m-r-5">Edit Profil</a>
+							<?php
+							}else{
+								$qq=mysql_query("select * from follow where user='$_SESSION[login]' and target='$h[email]'");
+								if(mysql_num_rows($qq)>0){
+								?>
+								<a href="?menu=unfollow&id=<?php echo $h['email']; ?>" class="btn btn-success"><i class="fa fa-fw fa-chain-broken" ></i> Unfollow</a>
+								<?php
+								}else{
+								?>
+								<a href="#" onclick="ikuti('<?php echo $h['email']; ?>'); return false;" class="btn btn-default"><i class="fa fa-fw fa-chain" ></i> Follow</a>
+								<?php
+								}
+							}
+							?>
 						</p>
 					</div>
 				</li>
@@ -27,7 +48,7 @@ $h=mysql_fetch_array($q);
 	</div>
 </div>
 <?php
-$qq=mysql_query("select * from track where user='$_SESSION[login]'");
+$qq=mysql_query("select * from track where user='$h[email]'");
 $track=mysql_num_rows($qq);
 $qq=mysql_query("select * from follow where user='$h[email]'");
 $following=mysql_num_rows($qq);
@@ -43,7 +64,17 @@ $follower=mysql_num_rows($qq);
 				<p><?php echo $track; ?></p>	
 			</div>
 			<div class="state-link">
+				<?php
+				if(isset($_GET['id'])){
+				?>
+				<a href="?menu=track&id=<?php echo $_GET['id']; ?>">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}else{
+				?>
 				<a href="?menu=track">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}
+				?>
 			</div>
 		</div>
 	</div>
@@ -55,7 +86,17 @@ $follower=mysql_num_rows($qq);
 				<p><?php echo $following; ?></p>	
 			</div>
 			<div class="state-link">
-				<a href="javascript:;">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				if(isset($_GET['id'])){
+				?>
+				<a href="?menu=following&id=<?php echo $_GET['id']; ?>">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}else{
+				?>
+				<a href="?menu=following">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}
+				?>
 			</div>
 		</div>
 	</div>
@@ -67,7 +108,17 @@ $follower=mysql_num_rows($qq);
 				<p><?php echo $follower; ?></p>	
 			</div>
 			<div class="state-link">
-				<a href="javascript:;">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				if(isset($_GET['id'])){
+				?>
+				<a href="?menu=follower&id=<?php echo $_GET['id']; ?>">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}else{
+				?>
+				<a href="?menu=follower">Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				<?php
+				}
+				?>
 			</div>
 		</div>
 	</div>

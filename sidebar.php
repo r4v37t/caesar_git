@@ -48,7 +48,15 @@
 			<li class="<?php echo ($_GET['menu']=='aboutus')?'active':''; ?>">
 				<a href="?menu=aboutus"><i class="fa fa-laptop"></i> <span>About Us</span></a>
 			</li>
-			
+			<?php
+			if(isset($_SESSION['akses'])){
+				if($_SESSION['akses']=='admin'){
+			?>
+			<!--<li class="nav-header">Menu Admin</li>-->
+			<?php
+				}
+			}
+			?>
 			<!-- begin sidebar minify button -->
 			<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
 			<!-- end sidebar minify button -->

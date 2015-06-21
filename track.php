@@ -9,6 +9,45 @@
 				</div>
 			</div>
 			<?php
+			if(isset($_GET['track'])){
+				if(isset($_GET['notif'])){
+					mysql_query("update notif set status='baca' where notif_id=$_GET[notif]");
+				}
+			?>
+			<ul class="result-list">
+				<?php
+				$q=mysql_query("select * from track where track_id=$_GET[track]");
+				$h=mysql_fetch_array($q);
+				$qq=mysql_query("select * from komentar where track_id=$h[track_id]");
+				$jumlah=mysql_num_rows($qq);
+				$qqq=mysql_query("select * from user where email='$h[user]'");
+				$hhh=mysql_fetch_array($qqq);
+				?>
+				<li>
+					<div class="result-image">
+						<a href="javascript:;"><img src="<?php echo $h['sampul']; ?>" alt="" /></a>
+					</div>
+					<div class="result-info">
+						<h4 class="title"><?php echo $h['judul']; ?></h4>
+						<p class="location"><?php echo date('d F Y',strtotime($h['tgl'])); ?> - Oleh: <?php echo$hhh['nama']; ?></p>
+						<p class="desc">
+							<?php echo $h['desk']; ?>
+						</p>
+						<div class="btn-row">
+							<i class="fa fa-fw fa-caret-square-o-right" data-toggle="tooltip" data-container="body" data-title="<?php echo $h['putar']; ?> kali dimainkan"></i> <?php echo $h['putar']; ?>
+							<i class="fa fa-fw fa-heart" data-toggle="tooltip" data-container="body" data-title="<?php echo $h['suka']; ?> yang menyukai"></i> <?php echo $h['suka']; ?>
+							<i class="fa fa-fw fa-comment" data-toggle="tooltip" data-container="body" data-title="<?php echo $jumlah; ?> komentar"></i> <?php echo $jumlah; ?>
+						</div>
+					</div>
+					<div class="result-price">
+						<a onclick="window.open('play.php?id=<?php echo $h['track_id']; ?>','Player','width=400, height=50');" class="btn btn-inverse"><i class="fa fa-fw fa-caret-square-o-right" ></i> Putar</a>
+						<a href="#" onclick="suka(<?php echo $h['track_id']; ?>); return false;" class="btn btn-inverse"><i class="fa fa-fw fa-heart" ></i> Suka</a>
+						<a href="#" onclick="komentar(<?php echo $h['track_id']; ?>); return false;" data-toggle="modal" class="btn btn-inverse"><i class="fa fa-fw fa-comment" ></i> Komentar</a>
+					</div>
+				</li>
+			</ul>
+			<?php
+			}else{
 			if(isset($_GET['hal'])){
 				$hal=$_GET['hal'];
 			}else{
@@ -18,7 +57,11 @@
 			$awal=$hal-1;
 			$awal*=$batas;
 			
-			$q=mysql_query("select * from track where user='$_SESSION[login]'");
+			if(isset($_GET['id'])){
+				$q=mysql_query("select * from track where user='$_GET[id]'");
+			}else{
+				$q=mysql_query("select * from track where user='$_SESSION[login]'");
+			}
 			$h=mysql_num_rows($q);
 			$jlhHalaman=ceil($h/$batas);
 			?>
@@ -33,10 +76,16 @@
 			</ul>
 			<ul class="result-list">
 				<?php
-				$q=mysql_query("select * from track where user='$_SESSION[login]' order by tgl desc limit $awal,$batas");
+				if(isset($_GET['id'])){
+					$q=mysql_query("select * from track where user='$_GET[id]' order by tgl desc limit $awal,$batas");
+				}else{
+					$q=mysql_query("select * from track where user='$_SESSION[login]' order by tgl desc limit $awal,$batas");
+				}
 				while($h=mysql_fetch_array($q)){
 					$qq=mysql_query("select * from komentar where track_id=$h[track_id]");
 					$jumlah=mysql_num_rows($qq);
+					$qqq=mysql_query("select * from user where email='$h[user]'");
+					$hhh=mysql_fetch_array($qqq);
 				?>
 				<li>
 					<div class="result-image">
@@ -44,7 +93,7 @@
 					</div>
 					<div class="result-info">
 						<h4 class="title"><?php echo $h['judul']; ?></h4>
-						<p class="location"><?php echo date('d F Y',strtotime($h['tgl'])); ?></p>
+						<p class="location"><?php echo date('d F Y',strtotime($h['tgl'])); ?> - Oleh: <?php echo$hhh['nama']; ?></p>
 						<p class="desc">
 							<?php echo $h['desk']; ?>
 						</p>
@@ -56,8 +105,8 @@
 					</div>
 					<div class="result-price">
 						<a onclick="window.open('play.php?id=<?php echo $h['track_id']; ?>','Player','width=400, height=50');" class="btn btn-inverse"><i class="fa fa-fw fa-caret-square-o-right" ></i> Putar</a>
-						<a href="<?php echo $_SERVER['REQUEST_URI']; ?>&suka=<?php echo $h['track_id']; ?>" class="btn btn-inverse"><i class="fa fa-fw fa-heart" ></i> Suka</a>
-						<a href="#modal-komentar-<?php echo $h['track_id']; ?>" data-toggle="modal" class="btn btn-inverse"><i class="fa fa-fw fa-comment" ></i> Komentar</a>
+						<a href="#" onclick="suka(<?php echo $h['track_id']; ?>); return false;" class="btn btn-inverse"><i class="fa fa-fw fa-heart" ></i> Suka</a>
+						<a href="#" onclick="komentar(<?php echo $h['track_id']; ?>); return false;" data-toggle="modal" class="btn btn-inverse"><i class="fa fa-fw fa-comment" ></i> Komentar</a>
 					</div>
 				</li>
 				<?php
@@ -66,7 +115,11 @@
 			</ul>
 			<div class="clearfix">
 				<?php
-				$q=mysql_query("select * from track where user='$_SESSION[login]'");
+				if(isset($_GET['id'])){
+					$q=mysql_query("select * from track where user='$_GET[id]'");
+				}else{
+					$q=mysql_query("select * from track where user='$_SESSION[login]'");
+				}
 				$h=mysql_num_rows($q);
 				$jlhHalaman=ceil($h/$batas);
 				?>
@@ -80,11 +133,20 @@
 					?>
 				</ul>
 			</div>
+			<?php
+			}
+			?>
 		</div>
 	</div>
 </div>
 <?php
-$q=mysql_query("select * from track where user='$_SESSION[login]' order by tgl desc limit $awal,$batas");
+if(isset($_GET['id'])){
+	$q=mysql_query("select * from track where user='$_GET[id]' order by tgl desc limit $awal,$batas");
+}else if(isset($_GET['track'])){
+	$q=mysql_query("select * from track where track_id=$_GET[track]");
+}else{
+	$q=mysql_query("select * from track where user='$_SESSION[login]' order by tgl desc limit $awal,$batas");
+}
 while($h=mysql_fetch_array($q)){
 ?>
 <div class="modal fade" id="modal-komentar-<?php echo $h['track_id']; ?>">
@@ -111,7 +173,7 @@ while($h=mysql_fetch_array($q)){
 									</a>
 									<div class="media-body">
 										<h5 class="media-heading"><?php echo $hhh['nama']; ?></h5>
-										<p><?php echo $hh['isi']; ?></p>
+										<p class="textmentions"><?php echo $hh['isi']; ?></p>
 									</div>
 								</li>
 								<?php
@@ -126,7 +188,7 @@ while($h=mysql_fetch_array($q)){
 				<form method="post">
 					<div class="input-group">
 						<input type="hidden" name="id" value="<?php echo $h['track_id']; ?>" />
-						<input type="text" name="isi" class="form-control bg-silver" placeholder="Tulis kometar" />
+						<textarea name="isi" style="height:35px;" class="form-control bg-silver mentions" placeholder="Tulis kometar" ></textarea>
 						<span class="input-group-btn">
 							<button class="btn btn-primary" type="submit" name="komentar"><i class="fa fa-pencil"></i></button>
 						</span>
@@ -141,6 +203,12 @@ while($h=mysql_fetch_array($q)){
 if(isset($_POST['komentar'])){
 	$isi=$_POST['isi'];
 	if(!empty($isi)){
+		$q=mysql_query("select * from notif where user='$_SESSION[login]' and track_id=$_POST[id] and status='init'");
+		if(mysql_num_rows($q)>0){
+			//tidak ada
+		}else{
+			mysql_query("insert into notif values(null,$_POST[id],'$_SESSION[login]','post',now())");
+		}
 		$q=mysql_query("insert into komentar values(null,$_POST[id],'$_SESSION[login]','$isi')");
 		?><script>location.href='<?php echo $_SERVER['REQUEST_URI']; ?>';</script><?php
 	}
