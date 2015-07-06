@@ -198,9 +198,15 @@ if(isset($_GET['logout'])){
 						</a>
 						<ul class="dropdown-menu animated fadeInLeft">
 							<li class="arrow"></li>
+							<?php
+							if($_SESSION['akses']=='user'){
+							?>
 							<li><a href="?menu=profil">Profil</a></li>
 							<li><a href="#modal-uploadtrack" data-toggle="modal">Upload</a></li>
 							<li class="divider"></li>
+							<?php
+							}
+							?>
 							<li><a href="?logout">Sign Out</a></li>
 						</ul>
 					</li>
@@ -625,12 +631,15 @@ if(isset($_GET['logout'])){
 		$track=$_FILES['track']['name'];
 		$tgl=date('Y-m-d');
 		$acceptable = array(
-			'audio/mpeg'
+			'audio/mpeg',
+			'audio/mp3',
+			'audio/mpeg3',
+			'audio/x-mpeg-3'
 		);
 		if(!empty($judul)&&!empty($desk)&&!empty($sampul)&&!empty($track)){
 			$lokasi_sampul="assets/track/sampul/$sampul";
 			$lokasi_file="assets/track/file/$track";
-			if(move_uploaded_file($_FILES['sampul']['tmp_name'],$lokasi_sampul)&&!in_array($_FILES['track']['type'], $acceptable)){
+			if(move_uploaded_file($_FILES['sampul']['tmp_name'],$lokasi_sampul)&&in_array($_FILES['track']['type'], $acceptable)){
 				if(move_uploaded_file($_FILES['track']['tmp_name'],$lokasi_file)){
 					$q=mysql_query("insert into track values(null,'$_SESSION[login]','$judul','$desk','$lokasi_sampul','$lokasi_file','$tgl',0,0)");
 					if($q){

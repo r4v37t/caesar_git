@@ -1,3 +1,17 @@
+<?php
+if(isset($_POST['simpan'])){
+	$judul=$_POST['judul'];
+	$desk=$_POST['desk'];
+	if(!empty($judul)&&!empty($desk)){
+		$q=mysql_query("update track set judul='$judul',desk='$desk' where track_id=$_POST[id]");
+	}
+	?><script>location.href='<?php echo $_SERVER['REQUEST_URI']; ?>';</script><?php
+}
+if(isset($_GET['del'])){
+	mysql_query("delete from track where track_id=$_GET[del]");
+	?><script>location.href='?menu=track';</script><?php
+}
+?>
 <h1 class="page-header">Tracks <small>apa yang sudah di upload...</small></h1>
 <div class="row">
 	<div class="col-md-12">
@@ -94,6 +108,16 @@
 					<div class="result-info">
 						<h4 class="title"><?php echo $h['judul']; ?></h4>
 						<p class="location"><?php echo date('d F Y',strtotime($h['tgl'])); ?> - Oleh: <?php echo$hhh['nama']; ?></p>
+						<?php
+						if($h['user']==$_SESSION['login']){
+						?>
+						<p class="location">
+							<a href="#modal-edittrack-<?php echo $h['track_id']; ?>" data-toggle="modal">[Edit]</a>
+							<a href="?menu=track&del=<?php echo $h['track_id']; ?>">[Hapus]</a>
+						</p>
+						<?php
+						}
+						?>
 						<p class="desc">
 							<?php echo $h['desk']; ?>
 						</p>
@@ -220,5 +244,37 @@ if(isset($_GET['suka'])){
 	$suka++;
 	mysql_query("update track set suka=$suka where track_id=$_GET[suka]");
 	?><script>location.href='<?php echo $_SERVER['HTTP_REFERER']; ?>';</script><?php
+}
+$q=mysql_query("select * from track where user='$_SESSION[login]'");
+while($h=mysql_fetch_array($q)){
+?>
+<div class="modal fade" id="modal-edittrack-<?php echo $h['track_id']; ?>">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">Edit Track</h4>
+			</div>
+			<div class="modal-body">
+				<form method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="id" value="<?php echo $h['track_id']; ?>" />
+					<fieldset>
+						<div class="form-group">
+							<label for="judul">Judul Track</label>
+							<input type="text" name="judul" value="<?php echo $h['judul']; ?>" class="form-control" id="judul" placeholder="Judul Track" />
+						</div>
+						<div class="form-group">
+							<label for="desk">Deskripsi Track</label>
+							<textarea name="desk" class="form-control" id="desk" placeholder="Deskripsi Track"><?php echo $h['desk']; ?></textarea>
+						</div>
+						<button type="submit" name="simpan" class="btn btn-sm btn-primary m-r-5">Simpan</button>
+						<button type="button" data-dismiss="modal" class="btn btn-sm btn-default">Cancel</button>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
 }
 ?>
