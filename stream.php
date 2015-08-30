@@ -21,7 +21,7 @@
 			$awal=$hal-1;
 			$awal*=$batas;
 			if(isset($_SESSION['login'])){
-				$q=mysql_query("select * from track where user in (select target from follow where user='$_SESSION[login]')");
+				$q=mysql_query("select * from track where user in (select target from follow where user='$_SESSION[login]') order by suka desc");
 			}else{
 				$q=mysql_query("select * from track order by suka desc");
 			}
@@ -79,7 +79,7 @@
 			<div class="clearfix">
 				<?php
 				if(isset($_SESSION['login'])){
-					$q=mysql_query("select * from track where user in (select target from follow where user='$_SESSION[login]')");
+					$q=mysql_query("select * from track where user in (select target from follow where user='$_SESSION[login]') order by suka desc");
 				}else{
 					$q=mysql_query("select * from track order by suka desc");
 				}

@@ -643,6 +643,9 @@ if(isset($_GET['logout'])){
 				if(move_uploaded_file($_FILES['track']['tmp_name'],$lokasi_file)){
 					$q=mysql_query("insert into track values(null,'$_SESSION[login]','$judul','$desk','$lokasi_sampul','$lokasi_file','$tgl',0,0)");
 					if($q){
+						$q=mysql_query("select * from track where user='$_SESSION[login]' order by tgl desc limit 1");
+						$h=mysql_fetch_array($q);
+						mysql_query("insert into notif values(null,$h[track_id],'$h[user]','init',now())");
 						?><script>
 							$('#modal-uploadsukses').modal('show'); 
 							setTimeout(function(){location.href='?menu=track';},1000);

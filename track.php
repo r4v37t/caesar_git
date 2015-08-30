@@ -113,7 +113,7 @@ if(isset($_GET['del'])){
 						?>
 						<p class="location">
 							<a href="#modal-edittrack-<?php echo $h['track_id']; ?>" data-toggle="modal">[Edit]</a>
-							<a href="?menu=track&del=<?php echo $h['track_id']; ?>">[Hapus]</a>
+							<a href="?menu=track&del=<?php echo $h['track_id']; ?>" onclick="return confirm('Yakin hapus ini?');">[Hapus]</a>
 						</p>
 						<?php
 						}
